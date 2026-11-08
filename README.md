@@ -79,6 +79,10 @@ location /assets/ { root /srv/kolon-agri/frontend/dist; add_header Cache-Control
 location / { root /srv/kolon-agri/frontend/dist; try_files $uri $uri/index.html /index.html; add_header Cache-Control "no-cache"; }
 ```
 
+### Démonstration Firebase Hosting + Render
+
+Firebase Hosting ne relaie pas vers une API externe : le site (`https://kolon-agri.web.app`, configuré par `firebase.json`) appelle directement l'API Render. Build du frontend avec `VITE_API_BASE_URL=https://<service>.onrender.com/api/v1` et `VITE_SITE_URL=https://kolon-agri.web.app` ; le `sitemap.xml` de l'API est copié au build. Sur Render : `SESSION_COOKIE_SAMESITE=none` (cookie partitionné), `CORS_ORIGINS` et `APP_PUBLIC_URL` sur l'URL `web.app`. Offre gratuite : veille après 15 min sans trafic, réveil d'environ une minute.
+
 ### Mise en service
 
 1. `pnpm install --frozen-lockfile`, puis `pnpm check` (CI : secret `MONGODB_TEST_URI`, base de test distincte).

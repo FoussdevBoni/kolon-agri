@@ -16,6 +16,7 @@
 - Isolation des environnements : la configuration est refusée au démarrage si `NODE_ENV=test` avec une `RESEND_API_KEY`, si une base suffixée `_test` est utilisée hors `NODE_ENV=test`, ou, en production, si `APP_PUBLIC_URL` ou `CORS_ORIGINS` ne sont pas en https. Le worker d'emails refuse de démarrer en test ou sur une base `_test` ; aucun fournisseur réel n'est actif en test (clés Resend et Cloudinary neutralisées par la configuration Vitest).
 - Seules destinations des requêtes serveur : API Resend et API Cloudinary (URL fixes) ; l'URL publiée d'un média doit être `https://res.cloudinary.com/…`. Aucune URL fournie par un utilisateur n'est appelée par le serveur.
 
+- Démonstration sur `web.app` + `onrender.com` (sites distincts) : `SESSION_COOKIE_SAMESITE=none`, qui rend le cookie `Partitioned` (CHIPS), toujours HttpOnly et Secure ; le CSRF reste assuré par le jeton synchroniseur et la liste blanche d'origines. Les navigateurs anciens ou bloquant tous les cookies tiers ne pourront pas ouvrir de session.
 - Cache : seules les lectures publiques de contenus publiés sont cachables par un CDN (60 s) ; vues d'administration, données de compte et toute réponse d'erreur en `no-store`.
 
 ## Audit du lot 6 — vulnérabilités confirmées et corrections

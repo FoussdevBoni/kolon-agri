@@ -5,12 +5,20 @@ import { parseCookies } from '../../core/http/cookies.js';
 /** Préfixe __Host- en HTTPS : cookie limité à l'hôte de l'API, sans attribut Domain. */
 export const SESSION_COOKIE_NAME = env.COOKIE_SECURE ? '__Host-kolon_session' : 'kolon_session';
 
-function sessionCookieOptions(): CookieOptions {
+/**
+ * Site et API sur des domaines distincts (`SameSite=None`) : le cookie est partitionné (CHIPS),
+ * c'est-à-dire isolé par site de premier niveau, ce que les navigateurs récents acceptent même
+ * lorsqu'ils limitent les cookies tiers. Il reste HttpOnly et Secure.
+ */
+export function sessionCookieOptions(
+  config: Pick<typeof env, 'COOKIE_SECURE' | 'SESSION_COOKIE_SAMESITE'> = env,
+): CookieOptions {
   return {
     httpOnly: true,
-    secure: env.COOKIE_SECURE,
-    sameSite: env.SESSION_COOKIE_SAMESITE,
+    secure: config.COOKIE_SECURE,
+    sameSite: config.SESSION_COOKIE_SAMESITE,
     path: '/',
+    ...(config.SESSION_COOKIE_SAMESITE === 'none' ? { partitioned: true } : {}),
   };
 }
 

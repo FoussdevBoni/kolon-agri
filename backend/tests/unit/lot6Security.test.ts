@@ -1,3 +1,5 @@
+import express from 'express';
+import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { databaseNameOf, parseEnv } from '../../src/core/config/env.js';
 import {
@@ -5,6 +7,7 @@ import {
   EmailWorkerConfigurationError,
 } from '../../src/core/email/emailWorker.js';
 import { getEmailProvider } from '../../src/core/email/emailProvider.js';
+import { sessionCookieOptions } from '../../src/modules/auth/authCookie.js';
 
 const devUri = 'mongodb+srv://cluster.example.net/kolon_agri?retryWrites=true';
 const testUri = 'mongodb+srv://cluster.example.net/kolon_agri_test?retryWrites=true';
@@ -66,5 +69,33 @@ describe('isolation des environnements', () => {
 
   it('n’active aucun fournisseur réel dans le processus de test', () => {
     expect(getEmailProvider()).toBeNull();
+  });
+});
+
+describe('cookie de session entre domaines distincts', () => {
+  async function setCookieHeader(sameSite: 'lax' | 'none'): Promise<string> {
+    const app = express();
+    app.get('/', (_req, res) => {
+      res.cookie(
+        '__Host-test',
+        'valeur',
+        sessionCookieOptions({ COOKIE_SECURE: true, SESSION_COOKIE_SAMESITE: sameSite }),
+      );
+      res.end();
+    });
+    const response = await request(app).get('/');
+    return String(response.headers['set-cookie']);
+  }
+
+  it('partitionne le cookie en SameSite=None, en restant HttpOnly et Secure', async () => {
+    const header = await setCookieHeader('none');
+    expect(header).toMatch(/SameSite=None/);
+    expect(header).toMatch(/Partitioned/);
+    expect(header).toMatch(/HttpOnly/);
+    expect(header).toMatch(/Secure/);
+  });
+
+  it('ne partitionne pas un cookie de même site', async () => {
+    expect(await setCookieHeader('lax')).not.toMatch(/Partitioned/);
   });
 });

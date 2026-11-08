@@ -1,4 +1,9 @@
-import { canonicalUrl, renderHeadTags, type StaticPublicRoute } from './seoTags';
+import {
+  canonicalUrl,
+  renderHeadTags,
+  type StaticPublicRoute,
+  staticPublicRoutes,
+} from './seoTags';
 
 /** Espaces jamais explorés par les robots (doivent rester alignés sur le routeur). */
 export const disallowedPaths = [
@@ -19,6 +24,19 @@ export function buildRobotsTxt(siteUrl: string | null): string {
     ...(siteUrl ? ['', `Sitemap: ${canonicalUrl(siteUrl, '/sitemap.xml')}`] : []),
     '',
   ].join('\n');
+}
+
+/** Plan du site des pages fixes : repli si l'API n'est pas joignable au build. */
+export function buildStaticSitemap(siteUrl: string): string {
+  const urls = staticPublicRoutes
+    .map((route) => `<url><loc>${canonicalUrl(siteUrl, route.path)}</loc></url>`)
+    .join('');
+  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
+}
+
+/** Vérifie qu'un document reçu de l'API est bien un plan du site. */
+export function isSitemapXml(content: string): boolean {
+  return content.startsWith('<?xml') && content.includes('<urlset');
 }
 
 /** Remplace le bloc SEO de index.html par les métadonnées propres à une page publique fixe. */

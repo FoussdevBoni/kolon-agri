@@ -2,7 +2,13 @@ import { render } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { type PageMeta, useDocumentMeta, useNoIndex } from '../../src/core/hooks/useDocumentMeta';
-import { buildRobotsTxt, renderRouteHtml, routeOutputFile } from '../../src/core/seo/seoBuild';
+import {
+  buildRobotsTxt,
+  buildStaticSitemap,
+  isSitemapXml,
+  renderRouteHtml,
+  routeOutputFile,
+} from '../../src/core/seo/seoBuild';
 import { canonicalUrl, formatPageTitle, staticPublicRoutes } from '../../src/core/seo/seoTags';
 
 const indexHtml = `<html><head>
@@ -53,6 +59,14 @@ describe('balises SEO', () => {
     expect(() => renderRouteHtml('<html></html>', route, null)).toThrow(/Bloc SEO/);
     expect(routeOutputFile('/')).toBe('index.html');
     expect(routeOutputFile('/mise-en-relation')).toBe('mise-en-relation/index.html');
+  });
+
+  it('produit un plan du site de repli valide et reconnaît un document XML', () => {
+    const xml = buildStaticSitemap('https://kolon-agri.web.app/');
+    expect(isSitemapXml(xml)).toBe(true);
+    expect(xml).toContain('<loc>https://kolon-agri.web.app/catalogue</loc>');
+    expect(xml).not.toContain('dashboard');
+    expect(isSitemapXml('<!doctype html><html></html>')).toBe(false);
   });
 
   it('couvre toutes les pages publiques fixes du routeur', () => {
