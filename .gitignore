@@ -1,0 +1,19 @@
+node_modules/
+dist/
+coverage/
+*.log
+.vite/
+
+# Variables d'environnement : seuls les fichiers d'exemple sont versionnés
+.env
+.env.*
+!.env.example
+
+# Export OpenAPI généré
+backend/openapi/
+
+# Configuration locale des outils (chemins propres au poste)
+.claude/
+
+# Fichiers générés par Firebase
+.firebase/
