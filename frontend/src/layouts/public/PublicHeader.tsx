@@ -1,7 +1,6 @@
-import { Menu, Search, UserRound, X } from 'lucide-react';
+import { Menu, Search, X } from 'lucide-react';
 import { useId, useState } from 'react';
 import { Link, NavLink } from 'react-router';
-import { buttonClassName } from '../../core/components/buttonStyles';
 import { publicNavItems } from '../../core/navigation/publicNavigation';
 import { cn } from '../../core/utils/cn';
 import { QuotationCartLink } from '../../modules/quotations/components/QuotationCartLink';
@@ -52,15 +51,6 @@ export function PublicHeader() {
           >
             <Search aria-hidden="true" className="size-5" />
           </Link>
-          <span className="hidden xl:block">
-            <Link
-              to="/connexion"
-              className={buttonClassName('secondary', 'px-3 whitespace-nowrap')}
-            >
-              <UserRound aria-hidden="true" className="size-4" />
-              Connexion
-            </Link>
-          </span>
           <span className="hidden sm:block">
             <QuotationCartLink className="whitespace-nowrap" />
           </span>
@@ -104,13 +94,6 @@ export function PublicHeader() {
           ))}
         </ul>
         <QuotationCartLink className="w-full" onClick={closeMenu} />
-        <Link
-          to="/connexion"
-          onClick={closeMenu}
-          className={buttonClassName('secondary', 'mt-2 w-full')}
-        >
-          Connexion
-        </Link>
       </nav>
     </header>
   );
