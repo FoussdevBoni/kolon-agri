@@ -1,5 +1,5 @@
 import { CmsPage } from './components/CmsPage';
 
 export function AboutPage() {
-  return <CmsPage pageKey="about" fallbackTitle="À propos" />;
+  return <CmsPage pageKey="about" fallbackTitle="À propos" heroVariant="split" />;
 }

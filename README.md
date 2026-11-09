@@ -26,6 +26,12 @@ Contenu CMS initial (crée les pages et publie un contenu de départ sur les pag
 pnpm --filter @kolon-agri/backend cms:seed
 ```
 
+Contenus de démonstration (simulation par défaut ; `--apply` pour écrire, sans remplacer ni dupliquer l'existant ; références produits `DEMO-`) :
+
+```bash
+pnpm --filter @kolon-agri/backend seed:demo
+```
+
 `docker-compose.yml` fournit en option un MongoDB local en replica set, si Atlas n'est pas utilisé.
 
 ## Qualité

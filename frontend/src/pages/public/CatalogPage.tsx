@@ -8,6 +8,8 @@ import { ErrorState } from '../../core/components/ErrorState';
 import { inputClassName } from '../../core/components/FormField';
 import { LoadingState } from '../../core/components/LoadingState';
 import { Pagination } from '../../core/components/Pagination';
+import { ResponsiveImage } from '../../core/components/ResponsiveImage';
+import { cn } from '../../core/utils/cn';
 import { usePublicCategories } from '../../modules/categories/hooks/useCategories';
 import { ProductCard } from '../../modules/products/components/ProductCard';
 import { usePublicProducts } from '../../modules/products/hooks/useProducts';
@@ -60,7 +62,41 @@ function ProductCatalog() {
       aria-label="Produits"
       className="mx-auto max-w-7xl space-y-6 px-4 py-12 sm:px-6 lg:px-8"
     >
-      <div className="flex flex-col gap-3 rounded-2xl border border-forest/10 bg-white p-4 lg:flex-row">
+      {categories.data && categories.data.length > 0 && (
+        <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4" aria-label="Catégories">
+          {categories.data.map((category) => {
+            const active = filters.category === category.slug;
+            return (
+              <li key={category.id}>
+                <button
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => update({ categorie: active ? '' : category.slug })}
+                  className={cn(
+                    'group relative block aspect-[16/10] w-full overflow-hidden rounded-2xl bg-forest text-left',
+                    active && 'outline-3 outline-offset-2 outline-leaf',
+                  )}
+                >
+                  {category.image && (
+                    <ResponsiveImage
+                      image={category.image}
+                      sizes="(min-width: 1024px) 18rem, 50vw"
+                      alt=""
+                      className="absolute inset-0 h-full w-full transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                  <span aria-hidden="true" className="absolute inset-0 bg-forest/55" />
+                  <span className="absolute inset-x-0 bottom-0 p-4 font-display text-lg font-extrabold text-white">
+                    {category.name}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <div className="flex flex-col gap-3 rounded-2xl border border-forest/10 bg-white p-4 shadow-sm lg:flex-row">
         <form role="search" onSubmit={submitSearch} className="flex flex-1 gap-2">
           <label htmlFor="catalog-search" className="sr-only">
             Rechercher un produit
@@ -131,7 +167,23 @@ function ProductCatalog() {
               : 'Catalogue en préparation'
           }
           description={
-            hasFilters ? 'Modifiez la recherche ou choisissez une autre catégorie.' : undefined
+            hasFilters
+              ? 'Modifiez la recherche ou choisissez une autre catégorie.'
+              : 'Nos produits seront bientôt présentés ici.'
+          }
+          action={
+            hasFilters ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchDraft('');
+                  setParams(new URLSearchParams());
+                }}
+                className={buttonClassName('secondary')}
+              >
+                Voir tout le catalogue
+              </button>
+            ) : undefined
           }
         />
       ) : (
@@ -156,7 +208,7 @@ function ProductCatalog() {
 
 export function CatalogPage() {
   return (
-    <CmsPage pageKey="catalog" fallbackTitle="Catalogue">
+    <CmsPage pageKey="catalog" fallbackTitle="Catalogue" heroVariant="compact" placement="early">
       <ProductCatalog />
     </CmsPage>
   );

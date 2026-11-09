@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { photoCredits } from '../../core/content/photoCredits';
 import { publicNavItems, quotationRequestPath } from '../../core/navigation/publicNavigation';
 import { usePublishedPage } from '../../modules/pages/hooks/usePages';
 import { readSectionData } from '../../modules/pages/schemas/sectionSchema';
@@ -23,7 +24,7 @@ export function PublicFooter() {
   const contactLines = [contact?.phone, contact?.email, contact?.address].filter(Boolean);
 
   return (
-    <footer className="bg-charcoal text-ivory">
+    <footer className="bg-forest text-ivory">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:px-8">
         <div>
           <p className="font-display text-xl font-extrabold">{name}</p>
@@ -59,6 +60,19 @@ export function PublicFooter() {
         <p className="mx-auto max-w-7xl px-4 py-5 text-xs text-ivory/60 sm:px-6 lg:px-8">
           © {new Date().getFullYear()} {name}. Tous droits réservés.
         </p>
+        <details className="mx-auto max-w-7xl px-4 pb-5 text-xs text-ivory/60 sm:px-6 lg:px-8">
+          <summary className="cursor-pointer">Crédits photographiques</summary>
+          <ul className="mt-2 space-y-1">
+            {photoCredits.map((photo) => (
+              <li key={photo.sourceUrl}>
+                <a href={photo.sourceUrl} rel="noreferrer" target="_blank" className="underline">
+                  {photo.title}
+                </a>{' '}
+                — {photo.author}, {photo.license}, via Wikimedia Commons, image redimensionnée.
+              </li>
+            ))}
+          </ul>
+        </details>
       </div>
     </footer>
   );

@@ -16,6 +16,7 @@
     "db:check": "tsx src/scripts/checkDatabase.ts",
     "admin:create-super": "tsx src/scripts/createSuperAdmin.ts",
     "cms:seed": "tsx src/scripts/seedCms.ts",
+    "seed:demo": "tsx src/scripts/seedDemo.ts",
     "openapi:export": "tsx src/scripts/exportOpenApi.ts"
   },
   "dependencies": {

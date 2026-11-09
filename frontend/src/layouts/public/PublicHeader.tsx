@@ -1,14 +1,17 @@
-import { Menu, X } from 'lucide-react';
+import { Menu, Search, UserRound, X } from 'lucide-react';
 import { useId, useState } from 'react';
 import { Link, NavLink } from 'react-router';
+import { buttonClassName } from '../../core/components/buttonStyles';
 import { publicNavItems } from '../../core/navigation/publicNavigation';
 import { cn } from '../../core/utils/cn';
 import { QuotationCartLink } from '../../modules/quotations/components/QuotationCartLink';
 
 function navLinkClassName({ isActive }: { isActive: boolean }): string {
   return cn(
-    'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-    isActive ? 'text-forest' : 'text-charcoal/75 hover:text-forest',
+    'rounded-md px-2 py-2 text-sm font-medium whitespace-nowrap transition-colors',
+    isActive
+      ? 'text-forest underline decoration-leaf decoration-2 underline-offset-8'
+      : 'text-charcoal/75 hover:text-forest',
   );
 }
 
@@ -18,17 +21,18 @@ export function PublicHeader() {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-forest/10 bg-ivory/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 border-b border-forest/10 bg-white">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="font-display text-xl font-extrabold text-forest"
+          className="flex shrink-0 items-center gap-2 font-display text-xl font-extrabold whitespace-nowrap text-forest"
           onClick={closeMenu}
         >
+          <img src="/images/logo.jpg" alt="" width={44} height={44} className="size-11" />
           Kolon Agri
         </Link>
 
-        <nav aria-label="Navigation principale" className="hidden lg:block">
+        <nav aria-label="Navigation principale" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {publicNavItems.map((item) => (
               <li key={item.path}>
@@ -41,10 +45,28 @@ export function PublicHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <QuotationCartLink className="hidden sm:inline-flex" />
+          <Link
+            to="/catalogue"
+            aria-label="Rechercher dans le catalogue"
+            className="hidden size-11 shrink-0 items-center justify-center rounded-lg border border-forest/20 text-forest hover:bg-sand/40 2xl:inline-flex"
+          >
+            <Search aria-hidden="true" className="size-5" />
+          </Link>
+          <span className="hidden xl:block">
+            <Link
+              to="/connexion"
+              className={buttonClassName('secondary', 'px-3 whitespace-nowrap')}
+            >
+              <UserRound aria-hidden="true" className="size-4" />
+              Connexion
+            </Link>
+          </span>
+          <span className="hidden sm:block">
+            <QuotationCartLink className="whitespace-nowrap" />
+          </span>
           <button
             type="button"
-            className="inline-flex size-11 items-center justify-center rounded-lg text-forest hover:bg-forest/5 lg:hidden"
+            className="inline-flex size-11 items-center justify-center rounded-lg text-forest hover:bg-forest/5 xl:hidden"
             aria-expanded={menuOpen}
             aria-controls={menuId}
             aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
@@ -63,7 +85,7 @@ export function PublicHeader() {
         id={menuId}
         aria-label="Navigation principale mobile"
         hidden={!menuOpen}
-        className="border-t border-forest/10 bg-ivory px-4 pb-6 lg:hidden"
+        className="border-t border-forest/10 bg-white px-4 pb-6 xl:hidden"
       >
         <ul className="flex flex-col py-2">
           {publicNavItems.map((item) => (
@@ -82,6 +104,13 @@ export function PublicHeader() {
           ))}
         </ul>
         <QuotationCartLink className="w-full" onClick={closeMenu} />
+        <Link
+          to="/connexion"
+          onClick={closeMenu}
+          className={buttonClassName('secondary', 'mt-2 w-full')}
+        >
+          Connexion
+        </Link>
       </nav>
     </header>
   );

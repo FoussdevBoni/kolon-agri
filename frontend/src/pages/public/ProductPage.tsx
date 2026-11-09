@@ -39,7 +39,7 @@ function Gallery({ product }: { product: PublicProduct }) {
         image={active}
         sizes="(min-width: 1024px) 50vw, 100vw"
         priority
-        className="aspect-[4/3] w-full rounded-2xl"
+        className="aspect-[4/3] w-full rounded-3xl"
       />
       {product.images.length > 1 && (
         <ul className="flex gap-2 overflow-x-auto" aria-label="Autres images">
@@ -125,7 +125,10 @@ function ProductDetail({ product }: { product: PublicProduct }) {
               <span className="text-sm font-normal text-charcoal/60">(prix indicatif)</span>
             </p>
           )}
-          <AddToQuotation product={product} />
+          <div className="mt-6 rounded-2xl border border-forest/10 bg-white p-5 shadow-sm">
+            <h2 className="font-display text-lg font-extrabold">Ajouter à ma demande</h2>
+            <AddToQuotation product={product} />
+          </div>
 
           <h2 className="mt-10 text-xl font-bold">Variantes</h2>
           <div className="mt-3 overflow-x-auto rounded-xl border border-forest/10 bg-white">
@@ -154,7 +157,7 @@ function ProductDetail({ product }: { product: PublicProduct }) {
                   >
                     <td className="px-4 py-3 font-medium">
                       {variant.label}
-                      {variant.sku && (
+                      {variant.sku && !variant.sku.startsWith('DEMO-') && (
                         <span className="block text-xs text-charcoal/50">Réf. {variant.sku}</span>
                       )}
                     </td>
@@ -182,11 +185,13 @@ function ProductDetail({ product }: { product: PublicProduct }) {
           {product.characteristics.length > 0 && (
             <section>
               <h2 className="text-xl font-bold">Caractéristiques</h2>
-              <dl className="mt-3 divide-y divide-forest/10 rounded-xl border border-forest/10 bg-white">
+              <dl className="mt-3 grid gap-3 sm:grid-cols-2">
                 {product.characteristics.map((item, index) => (
-                  <div key={index} className="grid grid-cols-2 gap-4 px-4 py-3 text-sm">
-                    <dt className="font-medium">{item.label}</dt>
-                    <dd className="text-charcoal/80">{item.value}</dd>
+                  <div key={index} className="rounded-xl border border-forest/10 bg-white p-4">
+                    <dt className="text-xs font-bold tracking-wide text-leaf uppercase">
+                      {item.label}
+                    </dt>
+                    <dd className="mt-1 font-semibold">{item.value}</dd>
                   </div>
                 ))}
               </dl>
